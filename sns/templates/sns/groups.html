@@ -1,0 +1,187 @@
+{% extends 'sns/layout.html' %}
+
+{% block title %}Groups{% endblock %}
+
+{% block header %}
+<style>
+  
+  .group-page {
+    height: 500px;
+    background-image: url(../../static/sns/images/group3.jpg);
+    background-size: cover;
+    position: relative;
+
+  }
+.gp {
+    height: 500px;
+    background: rgba(0, 0, 0, 0.3);
+    background-size: cover;
+  }
+  .gp p {
+    font-size: 2.5rem;
+    color: #fff;
+    font-family: '游明朝','Yu Mincho',YuMincho,'Hiragino Mincho Pro',serif!important;
+    text-align: center;
+    padding-top: 250px;
+  }
+  .gr-co {
+    text-align: center;
+    height: 40px;
+    margin: 20px auto;
+  
+  }
+  .sub-title {
+    height: 40px;
+    font-size: 2rem;
+    margin: 0 auto;
+    width: 200px;
+    border-top: 1px solid #333;
+    border-bottom: 1px solid #333;
+  }
+  /*----------- メッセージ表示 ------------*/
+  .messages {
+    text-align: center;
+    margin-bottom: 20px;
+    color: red;
+  }
+  /*------------ 入力フォーム -----------*/
+  
+  .form-content {
+    margin: 0 auto;
+    width: 400px;
+    height: 300px;
+    display: table;
+  }
+  .form-content form {
+    height: 60px;
+    margin-top: 20px;
+  } 
+  #id_groups {
+    height: 26px;
+    width: 182px;
+  }
+  .group-name, .group-select {
+    float: right;
+  }
+  .group-name {
+    margin-right: 50px;
+  }
+  .group-select {
+    margin-right: 50px;
+  }
+  .friend form {
+    height: 100px;
+    margin-bottom: 20px;
+  }
+  .btn {
+    color: #fff;
+    background-color: #00ccff;
+    width: 80px;
+    height: 30px;
+    border-radius: 5px;
+    border-bottom: 5px solid #009999;
+  }
+  .mt-1:hover {
+    margin-top: 3px;
+    border-bottom: 2px solid #009999;
+  }
+  .mt-0:hover {
+    margin-top: 3px;
+    border-bottom: 2px solid #009999;
+  }
+  .btn-primary {
+    -webkit-box-shadow: 0 3px 5px rgba(0, 0, 0, .3);
+    box-shadow: 0 3px 5px rgba(0, 0, 0, .3);
+  }
+  form input {
+    height: 20px;
+    border: 2px solid #aaa;
+    outline: none;
+  }
+  form input:focus {
+    border-color: dodgerBlue;
+    box-shadow: 0 0 8px 0 dodgerBlue;
+  }
+  form select {
+    height: 20px;
+    border: 2px solid #aaa;
+    outline: none;
+  }
+  form select:focus {
+    border-color: dodgerBlue;
+    box-shadow: 0 0 8px 0 dodgerBlue;
+  }
+  /*-------- フレンド ---------------*/
+  ul li {
+    list-style: none;
+  }
+  .friend p {
+    margin-bottom: 10px;
+  }
+  #id_friends {
+    margin-bottom: 10px;
+    font-size: 1rem;
+  }
+  ul li label {
+    position: relative;
+  }
+  #id_friends_0 {
+    height: 17px;
+    width: 17px;
+    vertical-align: middle;
+    margin-right: 5px;
+  }
+</style>
+<section class="group-page">
+  <div class="gp">
+    <p>
+      グループに友達を登録して輪を広げよう
+    </p>
+  </div>
+</section>
+<main class="groups">
+  <div class="gr-co">
+    <h2 class="sub-title">グループ</h2>
+  </div>
+
+  {% if messages %}
+  <ul class="messages">
+    {% for message in messages %}
+    <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+  {% endblock %}
+
+{% block content %}
+<div class="form-content">
+<p>Groupの登録</p>
+  <form action="{% url 'creategroup' %}" method="post">
+    {% csrf_token %}
+    グループ名：{{create_form.group_name}}
+    <div class="group-name">
+      <button class="btn btn-primary mt-1">作成</button> 
+    </div>  
+  </form>
+<form action="{% url 'groups' %}" method="post">
+    {% csrf_token %}
+    <input type="hidden" name="mode" value="__groups_form__">
+    グループ：{{groups_form.groups}}
+    <div class="group-select">
+      <button class="btn btn-primary mt-1">選択</button>
+    </div>
+</form>
+<div class="friend">
+  <form action="{% url 'groups' %}" method="post">
+  {% csrf_token%}
+  <input type="hidden" name="mode" value="__friends_form__">
+  <input type="hidden" name="group" value="{{group}}"/>
+    
+  <p>フレンド:</p>
+    {{friends_form.friends}}
+    <button class="btn btn-primary mt-0">登録</button>
+  </form>
+</div>
+</div>
+</main>
+{% endblock %}

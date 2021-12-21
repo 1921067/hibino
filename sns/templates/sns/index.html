@@ -1,0 +1,270 @@
+{% extends 'sns/layout.html' %}
+
+{% load my_templatetag %}
+
+{% block title %}Index{% endblock %}
+
+{% block header %}
+
+<script>
+  function sendGroupForm(page) {
+    document.group_form.action += page;
+    document.group_form.submit();
+  }
+</script>
+{% load static %}
+<body class="ib">
+{% if messages %}
+<ul class="messages">
+  {% for message in messages %}
+  <li{% if message.tags %}
+    class="{{ message.tags }}"
+    {% endif %}>{{ message }}</li>
+  {% endfor %}
+</ul>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+
+<style>
+  #hg {
+    height: 500px;
+    background-image: url(../../static/sns/images/haikei3.jpg);
+    background-size: cover;
+  }
+  #hg .ko {
+    height: 300px;
+    width: 300px;
+    /*background-color: rgb(0, 0, 255, 0.5);*/
+    
+    border-radius: 50%;
+    float: right;
+    margin: 50px 150px 0 0;
+
+  }
+  #hg h2 {
+    width: 300px;
+    height: 300px;
+    font-size: 3rem;
+    color: #fff;
+    font-family: '游明朝','Yu Mincho',YuMincho,'Hiragino Mincho Pro',serif!important;
+    margin-top: 70px;
+    margin-left: 33px;
+    border-radius: 50%;
+  }
+
+  .index {
+    text-align: center;
+    /*background: skyblue;*/
+    /*border-radius: 20%;*/
+    /*margin: 20px 0 40px;*/
+  }
+  #index h3 {
+    display: inline-block;
+  }
+  .sub-title {
+    font-size: 1.5rem;
+    border-top: solid 1px #333;
+    border-bottom: solid 1px #333;
+    width: 200px;
+    margin: 20px auto;
+  }
+  #id_groups {
+    list-style: none;
+  }
+  #id_groups li {
+    margin: 20px;
+  }
+  .button {
+    margin: 20px 0;
+    height: 40px;
+  }
+  .btn {
+    color: #fff;
+    background-color: #00ccff;
+    width: 80px;
+    height: 30px;
+    border-radius: 5px;
+    border-bottom: 5px solid #009999;
+
+  }
+  .btn:hover {
+    margin-top: 3px;
+    border-bottom: 2px solid #009999;
+  }
+  .btn-primary {
+    -webkit-box-shadow: 0 3px 5px rgba(0, 0, 0, .3);
+    box-shadow: 0 3px 5px rgba(0, 0, 0, .3);
+  }
+/*----メッセージ部分----*/
+  .table {
+    margin: 10px auto 0;
+    width: 600px;
+    border-spacing: 0 10px ;
+  }
+  /*------メッセージタイトル-------*/
+  tbody tr th {
+    font-size: 25px;
+    border-top: solid 1px #333;
+    border-bottom: solid 1px #333;
+  }
+/*----------- メッセージ表示 -----------*/
+  tbody tr td {
+    background: #fff;
+    border: solid 1px #333;
+  }
+  tr td ul {
+    list-style: none;
+  }
+  tr td ul li {
+    color: red;
+  }
+  .float-left a {
+    text-decoration: none;
+    color: #333;
+  }
+  .ms-b {
+    text-align: right;
+    margin-right: 10px;
+    margin-bottom: 7px;    
+  }
+  .ms-b a {
+    padding: 0 4px;
+    margin-left: 10px;
+    background: #00ccff;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    /*border: 2px solid #333;*/
+  }
+  .ms-b a:hover {
+    background: #009999;
+  }
+  /*----------- ページ -----------*/
+  .pagenation {
+    display: flex;
+    justify-content: center;
+    list-style: none;
+    margin: 30px 0;
+  }
+.pagenation li {
+  margin-left: 10px;
+}
+</style>
+
+<section>
+  <div id="hg" class="big-hg">
+    <div class="ko">
+      <h2 class="ko-text">
+      楽しい投稿で<br>
+      笑顔に<br>
+      繋がりを</h2>
+    </div>
+  </div>
+</section>
+<section class="index">
+  <h3 class="sub-title">グループ</h3>
+  <form action="{% url 'index' %}" method="post" name="group_form">
+    {% csrf_token %}
+    {% for a in check_form %}
+    <div class="check">
+    {{a}}
+    </div>
+    {% endfor %}
+    
+    <div class="button">
+      <button class="btn btn-primary">更新</button>
+    </div>
+  </form>
+</section>
+<hr>
+<table class="table mt-3">
+  <tr><th>メッセージ</th></tr>
+{% for item in contents %}
+  <tr><td>
+    <p class="my-0">
+      {% if item.group.title == 'public' %}
+      <span class="bg-info text-light px-1">Public</span>
+      {% endif %}
+      {{item.content}}
+    </p>
+    <p class="my-10">
+      {% for val in co %}
+      {% access_list so forloop.counter0 as sm %}
+          {% if item.content == val %}
+              {% for ls in sm %}
+                  {% if ls == 'ポジティブ' %}
+                  <font color="orange">{{ls}}</font>
+                  {% elif ls == 'ネガティブ' %}
+                  <font color="blue">{{ls}}</font>
+                  {% else %}
+                  {{ls}}
+                  {% endif %}
+              {% endfor %} 
+          {% endif %}    
+      {% endfor %}
+  </p>
+    <p class=""> ({{item.pub_date}})</p>
+    {% if item.share_id > 0 %}
+    <ul><li class="text-black-50">"{{item.get_share}}"</li></ul>
+    {% endif %}
+    <div class="ms">
+      <div class="ms-a">
+        <div class="float-left text-info">
+          <a href="{% url 'share' item.id %}">
+            ♲{{item.share_count}}
+          </a>
+          <a href="{% url 'good' item.id %}">
+            👍{{item.good_count}}
+          </a>
+        </div>
+      </div>
+      <div class="ms-b">
+        <div class="float-right">
+          投稿者：{{item.owner}}<a href="{% url 'add' %}?name={{item.owner}}">フレンド追加</a>
+        </div>
+      </div>
+    </div>
+  </td></tr>
+{% endfor %}
+</table>
+
+<ul class="pagenation justify-content-center">
+  {% if contents.has_previous %}
+  <li class="page-item">
+    <a class="page-link" href="javascript:sendGroupForm(1);">&laquo; first</a>
+  </li>
+  <li class="page-item">
+    <a class="page-link" href="javascript:sendGroupForm({{contents.previous_page_number}});">&laquo; prev</a>
+  </li>
+  {% else %}
+  <li class="page-item">
+    <a class="page-link">&laquo; first</a>
+  </li>
+  <li class="page-item">
+    <a class="page-link">&laquo; prev</a>
+  </li>
+  {% endif %}
+  <li class="page-item">
+    <a class="page-link">
+      {{contents.number}}/{{contents.paginator.num_pages}}</a>
+  </li>
+  {% if contents.has_next %}
+  <li class="page-item">
+    <a class="page-link" href="javascript:sendGroupForm({{contents.next_page_number}});">next &laquo;</a>
+  </li>
+  <li class="page-item">
+    <a class="page-link" href="javascript:sendGroupForm({{contents.paginator.num_pages}});">last &laquo;</a>
+  </li>
+  {% else %}
+  <li class="page-item">
+    <a class="page-link">next &laquo;</a>
+  </li>
+  <li class="page-item">
+    <a class="page-link">last &laquo;</a>
+  </li>
+  {% endif %}  
+</ul>
+</body>
+{% endblock %}

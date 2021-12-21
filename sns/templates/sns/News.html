@@ -1,0 +1,125 @@
+{% extends 'sns/layout.html' %}
+
+{% block title %}News{% endblock %}
+{% block header %}
+
+<style>
+  /*----------- 画像 テキスト --------------*/
+  .news-page {
+    height: 500px;
+    background-image: url(../../static/sns/images/news8.jpg);
+    background-size: cover;
+    position: relative;
+  }
+  .np {
+    height: 500px;
+    background: rgba(0, 0, 0, 0.3);
+    background-size: cover;
+  }
+  .np p {
+    font-size: 2.5rem;
+    color: #fff;
+    font-family: '游明朝','Yu Mincho',YuMincho,'Hiragino Mincho Pro',serif!important;
+    text-align: center;
+    padding-top: 250px;
+  }
+  .su-ti {
+    height: 40px;
+    font-size: 2rem;
+    margin: 30px auto;
+    text-align: center;
+    width: 200px;
+    border-top: 1px solid #333;
+    border-bottom: 1px solid #333;
+  }
+  /*--------- ニュース表示 ---------------*/
+  .content {
+    margin: auto 200px;
+  }
+  /*-------------- 送信 ----------------*/
+  form {
+    height: 50px;
+  }
+  #name {
+    height: 20px;
+    width: 200px;
+    border: 2px solid #aaa;
+    outline: none;
+  }
+  #name:focus {
+    border-color: dodgerBlue;
+    box-shadow: 0 0 8px 0 dodgerBlue;
+  }
+  #send {
+    color: #fff;
+    background-color: #00ccff;
+    width: 80px;
+    height: 30px;
+    border-radius: 5px;
+    border-bottom: 5px solid #009999;
+  }
+  #send:hover {
+    margin-top: 3px;
+    border-bottom: 2px solid #009999;
+  }
+  .submit {
+    float: right;
+    margin-right: 150px;
+  }
+  .title {
+    margin-bottom: 20px;
+    margin-top: 20px;
+  }
+  .sub {
+    margin-bottom: 30px;
+  }
+  .ti-su {
+    padding: 0.2em 0.5em;
+    margin: 2em 0;
+    color: #565656;
+    background: #ffeaea;
+    box-shadow: 0px 0px 0px 10px #ffeaea;
+    border: dashed 2px #ffc3c3;
+    border-radius: 8px;
+  }
+</style>
+
+<section class="news-page">
+  <div class="np">
+    <p>
+      今話題のニュースを見てみよう
+    </p>
+  </div>
+</section>
+<h2 class="su-ti">ニュース</h2>
+{% endblock %}
+{% block content %}
+<form action="{% url 'News' %}" method="post">
+  {% csrf_token %}
+  <div>
+    <label for="name">おすすすめのニュースを紹介します。</label>
+    <input type="text" id="name" name="name">
+    <div class="submit">
+      <input type="submit" id="send" value="送信する">
+    </div>
+  </div>
+</form>
+<p class="sub">
+{{name}}
+{{emo}}
+{{par}}
+</p>
+<h1>{{tit}}</h1>
+
+{% for item in title %}
+<div class="ti-su">
+<h2 class="title">
+{{item}}
+</h2>
+<p class="sub">
+{{subtitle.pop}}
+</p>
+</div>
+{% endfor %}
+
+{% endblock %}

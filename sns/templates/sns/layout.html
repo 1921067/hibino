@@ -1,0 +1,65 @@
+{% load static %}
+<!DOCTYPE html>
+<html jang="ja">
+<head>
+  <meta charset="utf-8">
+  <title>{% block title %}{% endblock %}</title>
+  <link rel="stylesheet" 
+    href="{% static 'sns/css/style.css' %}"
+    crossorigin="anonymous"/>
+  <link rel="stylesheet" href="https://unkpg.com/ress/dist/ress.min.css">
+</head>
+
+<body class="container">
+  <header id="layout" class="big-bg">
+    <div class="header-contents">
+      <h1 class="big-title"><img src="{% static "sns/images/logo3.png"%}"></h1>
+      <div class="ml"> 
+      <div class="log">
+        <span>ログイン: <span class="h6"> {{ UserID }} </span></span>
+      </div>     
+      <nav class="navbar navbar-expand navbar-light bg-light">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+        <a class="nav-link" href="{% url 'index' %}">
+          <img src="{% static "sns/images/top.png"%}" width="20" height="20">
+          Top</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'post' %}">
+          <img src="{% static "sns/images/pen.png"%}" width="20" height="20">
+          Post</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'groups' %}">
+          <img src="{% static "sns/images/people.png"%}" width="20" height="20">
+          Group</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'News' %}">
+          <img src="{% static "sns/images/news.png"%}" width="20" height="20">
+          News</a>
+        </li>
+      </ul>
+      </nav>
+      </div>
+    </div>
+  </header>
+  <main>
+    <div>{% block header %}{% endblock %}</div>
+    <div class="content">{% block content %}
+    {% endblock %}</div>
+  </main>
+  
+  <footer>
+  <hr>
+  <div class="my-3">
+    <span class="font-weight-bold">
+      <a href="{% url 'Logout' %}">ログアウト</a></span>
+    <span class="float-right">copyright 2021
+      HIBINO&TOMOYA.</span>
+  </div>
+  </footer>
+  <!--</div>-->
+</body>
+</html>
